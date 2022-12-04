@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\Listings;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,20 +18,25 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('listings', [
         'heading' => 'Latest Listings',
-        'listings' => [
-            [
-                'id' => 1,
-                'title' => 'Listings One',
-                'description' => "i can't think of any description!"
-            ],
-            [
-                'id' => 2,
-                'title' => 'Listings two',
-                'description' => "Nothing to see here."
-            ]
-        ]
+        'listings' => Listings::all()
     ]);
 });
+
+Route::get('/listings/{id}', function($id) {
+    return view('listing', [
+        'listing' => Listings::find($id)
+    ]);
+});
+
+
+
+
+
+
+
+
+
+
 
 Route::get('/welcome', function() {
     return 'welcome to laravel';
@@ -43,4 +49,8 @@ Route::get('/posts/{id}', function($id) {
 Route::get('/search', function(Request $request) {
     //dd($request);
     return $request->name . ' ' . $request->city;
+});
+
+Route::get('/watch', function() {
+    return "nothing to watch here";
 });
