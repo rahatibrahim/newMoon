@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\ListingController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Listing;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,35 +14,14 @@ use App\Models\Listing;
 |
 */
 
-Route::get('/', function () {
-    return view('listings', [
-        'heading' => 'Latest Listings',
-        'listings' => Listing::all()
-    ]);
-});
+Route::get('/', [
+    ListingController::class, 'index'
+]);
 
-Route::get('/listings/{listing}', function(Listing $listing) {
-    // dd(Listing::find($id));
-    return view('listing', [
-        'listing' => $listing
-    ]);
-});
+Route::get('/listings/create', [
+    ListingController::class, 'create'
+]);
 
-
-
-
-
-
-
-
-
-
-
-Route::get('/posts/{id}', function($id) {
-    return 'you have posted ' . $id;
-})->where('id', '[0-9]+');
-
-Route::get('/search', function(Request $request) {
-    //dd($request);
-    return $request->name . ' ' . $request->city;
-});
+Route::get('/listings/{listing}', [
+    ListingController::class, 'show'
+]);
