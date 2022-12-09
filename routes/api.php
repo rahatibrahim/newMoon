@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/post', function(){
-    return response() -> json([
+Route::get('/post', function () {
+    return response()->json([
         'posts' => [
             [
                 'title' => 'Post One'
