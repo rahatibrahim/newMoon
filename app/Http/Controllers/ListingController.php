@@ -22,7 +22,6 @@ class ListingController extends Controller
     // Show all listings
     public function index()
     {
-        // dd(request());
         return view('listings.index', [
             'listings' => Listing::latest()->filter(request(['tag', 'search']))
                 ->paginate(4)
@@ -67,6 +66,9 @@ class ListingController extends Controller
 
     // Show edit form
     public function edit(Listing $listing) {
-        dd($listing);
+        // dd($listing);
+        return view('listings.edit', [
+            'listing' => $listing
+        ]);
     }
 }
