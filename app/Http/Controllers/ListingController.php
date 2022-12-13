@@ -5,20 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Listing;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Http\Controllers\Controller;
 
 class ListingController extends Controller
 {
-    /* Common Resource Routes:
-    index - Show all listings
-    show - Show single listing
-    create - Show form to create new listing
-    store - Store new listing
-    edit - Show form to edit listing
-    update - Update listing
-    destroy - Delete listing
-    */
-
     // Show all listings
     public function index()
     {
@@ -59,6 +48,8 @@ class ListingController extends Controller
             $formFields['logo'] = $request->file('logo')->store('logos', 'public');
         }
 
+        $formFields['user_id'] = auth()->id();
+
         Listing::create($formFields);
 
         return redirect('/')->with('message', 'Listing was successfully created!');
@@ -66,9 +57,47 @@ class ListingController extends Controller
 
     // Show edit form
     public function edit(Listing $listing) {
-        // dd($listing);
         return view('listings.edit', [
             'listing' => $listing
         ]);
+    }
+
+    // Update listing data
+    public function update(Request $request, Listing $listing)
+    {
+        // Make sure logged in user is owner
+        if($listing->user_id != auth()->id()) {
+            abort(403, 'Unauthorized Action');
+        }
+
+        $formFields = $request->validate([
+            'title' => 'required',
+            'company' => 'required',
+            'location' => 'required',
+            'website' => 'required',
+            'email' => ['required', 'email'],
+            'tags' => 'required',
+            'description' => 'required'
+        ]);
+
+        if($request->hasFile('logo')) {
+            $formFields['logo'] = $request->file('logo')->store('logos', 'public');
+        }
+
+        $listing->update($formFields);
+
+        return back()->with('message', 'Listing was successfully updated!');
+    }
+
+    // Delete listing
+    public function destroy(Listing $listing) {
+        $listing->delete();
+
+        return redirect('/')->with('message', 'Listing was successfully deleted!');
+    }
+
+    // Manage Listings
+    public function manage() {
+        return view('listings.manage', ['listings' => auth()->user()->listings()->get()]);
     }
 }
